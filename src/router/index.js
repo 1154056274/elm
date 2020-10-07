@@ -15,7 +15,21 @@ const router =  new VueRouter({
         },
         {
             path:'/comment',
-            component:()=>import('../views/Comment.vue')
+            component:()=>import('../views/Comment.vue'),
+            children:[
+               {
+                   path:'all',
+                   component:()=>import('../views/All.vue')
+               },
+               {
+                path:'true',
+                component:()=>import('../views/True.vue')
+                },
+                {
+                    path:'false',
+                    component:()=>import('../views/False.vue')
+                }
+            ]
         },
         {
             path:'/sell',

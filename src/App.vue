@@ -1,39 +1,34 @@
 <template>
   <div id="app">
     <div id="header">
-          <Header />
+      <Header />
+        
     </div>
     <div id="content">
-        <Content />
-    <router-view></router-view>
+    <Content />
     </div>
-   
+    <router-view id="main"></router-view>
+ 
   </div>
 </template>
 
 <script>
-import Header from './components/Header'
-import Content from './components/Content'
+
+import Header from "./components/Header";
+import Content from "./components/Content";
 
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-  Header,
-  Content,
-  }
-}
+    Header,
+    Content,
+ 
+  },
+};
 </script>
 
 <style>
-html,body{
-  height: 100%;
-}
-body{
-  display: flex;
-  flex-direction: column;
-}
-
 
 
 </style>

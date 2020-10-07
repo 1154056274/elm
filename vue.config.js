@@ -1,10 +1,12 @@
 const path = require('path')
+const webpack = require('webpack')
 const CompressionPlugin = require('compression-webpack-plugin') // compression-webpack-plugin插件需要npm安装
 
 function resolve(dir) {
     return path.join(__dirname, dir)
 }
 module.exports = {
+
   lintOnSave: 'error', // 设置eslint报错时停止代码编译
   productionSourceMap: false, // 不需要生产环境的 source map（减小dist文件大小，加速构建）
   devServer: {
@@ -46,6 +48,13 @@ module.exports = {
           threshold: 10240, // 超过10kB的数据进行压缩
           deleteOriginalAssets: false // 是否删除原文件 （原文件也建议发布到服务器以支持不兼容gzip的浏览器）
         })],
+        plugins: [ 
+          new webpack.ProvidePlugin({ 
+                $:"jquery", 
+                jQuery:"jquery", 
+               "windows.jQuery":"jquery"
+       }) 
+      ], 
         performance: { // 生产环境构建代码文件超出以下配置大小会在命令行中显示警告
           hints: 'warning',
           // 入口起点的最大体积 整数类型（以字节为单位,默认值是：250000 (bytes)）
