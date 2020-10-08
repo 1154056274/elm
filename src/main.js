@@ -7,6 +7,7 @@ import request from './util/request'
 
 
 
+
 Vue.use(Vant);
 Vue.config.productionTip = false
 Vue.prototype.$http = request
