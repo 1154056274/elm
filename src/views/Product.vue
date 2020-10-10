@@ -17,8 +17,8 @@
         <ul id="rightUl">
           <li v-for="(items, index) in list" :key="index" class="rightItem">
             <h3>{{ items.name }}</h3>
-            <div v-for="(item, index) in items.foods" :key="index" class="box">
-              <div class="zp"><img :src="item.image" /></div>
+            <div v-for="(item, index) in items.foods" :key="index" class="box"  >
+              <div class="zp" @click="goDetail(item.id)"><img :src="item.image" /></div>
               <div class="js">
                 <p>{{ item.name }}</p>
                 <p class="dec">{{ item.description }}</p>
@@ -27,7 +27,19 @@
                     >好评率{{ item.rating }}%</span
                   >
                 </div>
-                <p class="pri">￥{{ item.price }}</p>
+                <div class="dd">
+                  <p class="pri">￥{{ item.price }}</p>
+                  <div class="show" v-if="item.num > 0">
+                    <svg class="icon jss" aria-hidden="true" @click="dec(item)">
+                      <use xlink:href="#icon-tianjia1"></use>
+                    </svg>
+                    <span>{{ item.num }}</span>
+                  </div>
+
+                  <svg class="icon tj" aria-hidden="true" @click="add(item)">
+                    <use xlink:href="#icon-tianjia"></use>
+                  </svg>
+                </div>
               </div>
             </div>
           </li>
@@ -35,7 +47,7 @@
       </div>
     </div>
 
-    <Foot class="foot"></Foot>
+    <Foot class="foot" :allPrice='allPrice' :allNum='allNum'></Foot>
   </div>
 </template>
 
@@ -48,17 +60,84 @@ export default {
   data() {
     return {
       list: [],
-      flag: 1,
       scrollY: 0,
       clickEvent: false,
       listHeight: [],
+      number: {},
+      price: {},
+      allPrice: 0,
+      allNum: 0,
     };
   },
   methods: {
-    // 方法
+    goDetail(id){
+      this.$router.push({
+        path:'/detail',
+        query:{
+          id
+        }
+      })
+    },
+    add(item) {
+      (this.allPrice = 0), (this.allNum = 0);
+      item.num++;
+      if (this.number[item.id] === undefined) {
+        //之前咩有买过
+        this.number[item.id] = 1;
+      } else {
+        this.number[item.id]++;
+      }
+      for (var j in this.number) {
+        this.allNum += this.number[j];
+      }
+
+      for (var id in this.number) {
+        this.list.forEach((items) => {
+          items.foods.forEach((item) => {
+            if (id == item.id) {
+              this.price[id] = this.number[id] * item.price;
+            }
+          });
+        });
+      }
+      for (var i in this.price) {
+        this.allPrice += this.price[i];
+      }
+    },
+    dec(item) {
+      item.num--;
+       (this.allPrice = 0), (this.allNum = 0);
+        this.number[item.id]--;//每种商品的数量
+      
+      for (var j in this.number) { //总数量
+        this.allNum += this.number[j];
+      }
+
+      for (var id in this.number) { //每种商品的价格
+        this.list.forEach((items) => {
+          items.foods.forEach((item) => {
+            if (id == item.id) {
+              this.price[id] = this.number[id] * item.price;
+            }
+          });
+        });
+      }
+      for (var i in this.price) {//总价格
+        this.allPrice += this.price[i];
+      }
+    },
     getGoods() {
       this.$http.get("/goods").then((res) => {
+        var id = 1000;
+        res.data.data.forEach((items) => {
+          items.foods.forEach((item) => {
+            id++;
+            item.num = 0;
+            item.id = id;
+          });
+        });
         this.list = res.data.data;
+        console.log(res.data.data);
       });
     },
 
@@ -68,6 +147,7 @@ export default {
       })),
         (this.rights = new BScroll(this.$refs.right, {
           probeType: 3,
+          click: true,
         })),
         this.rights.on("scroll", (pos) => {
           this.scrollY = Math.abs(Math.round(pos.y));
@@ -93,7 +173,6 @@ export default {
         return;
       } else {
         let rightItems = this.$refs.right.getElementsByClassName("rightItem");
-
         let el = rightItems[index];
         this.rights.scrollToElement(el, 300);
       }
@@ -138,6 +217,13 @@ export default {
 };
 </script>
 <style lang='scss' scoped >
+.icon {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.15em;
+  fill: currentColor;
+  overflow: hidden;
+}
 .product {
   height: 435px;
   overflow: hidden;
@@ -147,8 +233,6 @@ export default {
     height: 435px;
     #leftTab {
       // height: 504px;
-    
-
       flex: 2;
       ul {
         li {
@@ -167,7 +251,6 @@ export default {
       }
     }
     #rightMain {
-    
       flex: 8;
       overflow-x: hidden;
 
@@ -212,6 +295,25 @@ export default {
             }
             .pri {
               color: red;
+            }
+            .dd {
+              position: relative;
+            }
+            .show {
+              width: 140px;
+              position: absolute;
+              left: 100px;
+              top: 0;
+            }
+            .jss {
+              font-size: 20px;
+              margin-right: 5px;
+            }
+            .tj {
+              position: absolute;
+              font-size: 20px;
+              top: 0;
+              left: 140px;
             }
           }
         }

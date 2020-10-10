@@ -13,6 +13,20 @@
       "unicode_decimal": 58917
     },
     {
+      "icon_id": "11711506",
+      "name": "添 加 (1)",
+      "font_class": "tianjia",
+      "unicode": "e63e",
+      "unicode_decimal": 58942
+    },
+    {
+      "icon_id": "12618322",
+      "name": "添 加",
+      "font_class": "tianjia1",
+      "unicode": "e5e5",
+      "unicode_decimal": 58853
+    },
+    {
       "icon_id": "13636422",
       "name": "购物车",
       "font_class": "qicheqianlian-select",
